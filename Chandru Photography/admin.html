@@ -227,7 +227,7 @@
       <div id="panel-home" class="section-panel active">
         <div class="panel-header">
           <div class="panel-title">Home <span>Section</span></div>
-          <button class="btn btn-gold" onclick="toast('Home content saved!','success')" style="width:auto;padding:0.6rem 1.25rem;"><i class="ri-save-line"></i> Save Changes</button>
+          <button class="btn btn-gold" onclick="saveHomeHero()" style="width:auto;padding:0.6rem 1.25rem;"><i class="ri-save-line"></i> Save Changes</button>
         </div>
         <div class="stats-row">
           <div class="stat-card"><div class="stat-icon gold"><i class="ri-camera-line"></i></div><div class="stat-info"><div class="num" id="statServices">8</div><div class="lbl">Services</div></div></div>
@@ -236,31 +236,20 @@
           <div class="stat-card"><div class="stat-icon red"><i class="ri-time-line"></i></div><div class="stat-info"><div class="num">14+</div><div class="lbl">Years Exp.</div></div></div>
         </div>
         <div class="card">
-          <div class="card-header"><span class="card-title"><i class="ri-slideshow-2-line"></i> Hero Slider Images</span></div>
-          <div class="hero-slides-preview">
-            <div class="hero-slide-item">
-              <img src="assets/hero-slide-1.jpg" alt="Slide 1" id="heroImg1">
-              <div class="hero-slide-num">Slide 1</div>
-              <button class="hero-slide-replace" onclick="document.getElementById('heroFile1').click()"><i class="ri-upload-cloud-line"></i> Replace Image</button>
-              <input type="file" id="heroFile1" accept="image/*" style="display:none" onchange="handleHeroUpload(this,1)">
-            </div>
-            <div class="hero-slide-item">
-              <img src="assets/hero-slide-2.jpg" alt="Slide 2" id="heroImg2">
-              <div class="hero-slide-num">Slide 2</div>
-              <button class="hero-slide-replace" onclick="document.getElementById('heroFile2').click()"><i class="ri-upload-cloud-line"></i> Replace Image</button>
-              <input type="file" id="heroFile2" accept="image/*" style="display:none" onchange="handleHeroUpload(this,2)">
-            </div>
-            <div class="hero-slide-item">
-              <img src="assets/hero-slide-3.jpg" alt="Slide 3" id="heroImg3">
-              <div class="hero-slide-num">Slide 3</div>
-              <button class="hero-slide-replace" onclick="document.getElementById('heroFile3').click()"><i class="ri-upload-cloud-line"></i> Replace Image</button>
-              <input type="file" id="heroFile3" accept="image/*" style="display:none" onchange="handleHeroUpload(this,3)">
-            </div>
+          <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+            <span class="card-title"><i class="ri-slideshow-2-line"></i> Hero Slider Images</span>
+            <button class="btn btn-gold" onclick="openAddHeroSlideModal()" style="width:auto;padding:0.45rem 1rem;font-size:0.85rem;"><i class="ri-add-line"></i> Add Slider Image</button>
           </div>
-          <p class="info-text"><i class="ri-information-line"></i> To permanently replace hero images: copy your uploaded file to assets/hero-slide-1.jpg (or 2, 3).</p>
+          <div class="hero-slides-preview" id="heroSlidesGrid" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(200px, 1fr));gap:1rem;">
+            <!-- Dynamically rendered -->
+          </div>
+          <p class="info-text" style="margin-top:0.75rem;"><i class="ri-information-line"></i> Uploaded slider images are saved permanently and automatically loop on your home hero section.</p>
         </div>
         <div class="card">
-          <div class="card-header"><span class="card-title"><i class="ri-text"></i> Hero Text Content</span></div>
+          <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+            <span class="card-title"><i class="ri-text"></i> Hero Text Content</span>
+            <button class="btn btn-gold" onclick="saveHomeHero()" style="width:auto;padding:0.4rem 1rem;font-size:0.8rem;"><i class="ri-save-line"></i> Save Hero Text</button>
+          </div>
           <div class="form-row">
             <div class="form-group"><label class="form-label">Main Title</label><input type="text" class="form-control" id="heroTitle" value="Visual Artistry. Timeless Memories."></div>
             <div class="form-group"><label class="form-label">Badge Text</label><input type="text" class="form-control" id="heroBadge" value="14+ Years of Visual Artistry | Based in Ramanathapuram"></div>
@@ -462,6 +451,29 @@
   </div>
 </div>
 
+<!-- HERO SLIDE MODAL -->
+<div class="modal-overlay" id="heroSlideModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('heroSlideModal')"><i class="ri-close-line"></i></button>
+    <div class="modal-title"><i class="ri-slideshow-2-line"></i> <span>Add Hero Slider Image</span></div>
+    <div class="form-group">
+      <label class="form-label">Slide Image Photo</label>
+      <div class="upload-zone" id="heroSlideUploadZone" onclick="document.getElementById('heroSlidePhotoInput').click()">
+        <i class="ri-image-add-line"></i>
+        <p>Click to upload or drag &amp; drop a slide photo<br><span>PNG, JPG, WEBP — recommended 1920×1080px</span></p>
+      </div>
+      <input type="file" id="heroSlidePhotoInput" accept="image/*" style="display:none" onchange="previewHeroSlidePhoto(this)">
+      <div id="heroSlidePhotoPreview" style="display:none;margin-top:0.75rem;text-align:center;">
+        <img id="heroSlidePhotoImg" src="" alt="Preview" style="max-width:100%;max-height:200px;border-radius:8px;border:1px solid var(--border);object-fit:cover;">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('heroSlideModal')">Cancel</button>
+      <button class="btn btn-gold" onclick="saveHeroSlide()" style="width:auto;padding:0.65rem 1.5rem;"><i class="ri-save-line"></i> Add Slide</button>
+    </div>
+  </div>
+</div>
+
 <!-- CONFIRM MODAL -->
 <div class="modal-overlay" id="confirmModal">
   <div class="modal-box">
@@ -506,17 +518,27 @@ const DEFAULT_PORTFOLIO = [
   { id:12, title:'The Radiant Purple Bride', category:'portraits', img:'assets/portfolio-bridal-portrait.jpg' }
 ];
 
+const DEFAULT_HERO_SLIDES = [
+  { id: 1, img: 'assets/hero-slide-1.jpg' },
+  { id: 2, img: 'assets/hero-slide-2.jpg' },
+  { id: 3, img: 'assets/hero-slide-3.jpg' }
+];
+
+let heroSlides = [];
 let services = [];
 let portfolio = [];
 let adminPassword = localStorage.getItem('adminPassword') || 'chandru2024';
 let currentPortfolioFilter = 'all';
 
 function init() {
+  heroSlides = JSON.parse(localStorage.getItem('cp_hero_slides') || 'null') || JSON.parse(JSON.stringify(DEFAULT_HERO_SLIDES));
   services = JSON.parse(localStorage.getItem('cp_services') || 'null') || JSON.parse(JSON.stringify(DEFAULT_SERVICES));
   portfolio = JSON.parse(localStorage.getItem('cp_portfolio') || 'null') || JSON.parse(JSON.stringify(DEFAULT_PORTFOLIO));
+  renderHeroSlidesGrid();
   renderServicesTable();
   renderPortfolioGrid();
   renderContactServicesList();
+  loadHomeHeroSettings();
   updateStats();
 }
 
@@ -551,6 +573,102 @@ function updateStats() {
   document.getElementById('statPortfolio').textContent = portfolio.length;
 }
 
+/* ---- HERO SLIDER MANAGEMENT ---- */
+function renderHeroSlidesGrid() {
+  const grid = document.getElementById('heroSlidesGrid');
+  if (!grid) return;
+  grid.innerHTML = heroSlides.map((slide, idx) => `
+    <div class="hero-slide-item">
+      <img src="${slide.img}" alt="Slide ${idx + 1}" style="width:100%;height:130px;object-fit:cover;display:block;" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22130%22><rect fill=%22%23252525%22/></svg>'">
+      <div class="hero-slide-num">Slide ${idx + 1}</div>
+      <div style="display:flex;gap:0.35rem;padding:0.4rem;background:var(--bg-surface);border-top:1px solid var(--border);">
+        <button class="btn-edit" style="flex:1;padding:0.4rem;font-size:0.75rem;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.25rem;" onclick="document.getElementById('replaceSlideFile_${slide.id}').click()"><i class="ri-upload-2-line"></i> Replace</button>
+        <input type="file" id="replaceSlideFile_${slide.id}" accept="image/*" style="display:none" onchange="handleHeroSlideReplace(this, ${slide.id})">
+        ${heroSlides.length > 1 ? `<button class="btn-danger" style="padding:0.4rem 0.6rem;font-size:0.75rem;border-radius:6px;cursor:pointer;" onclick="confirmDelete('heroSlide', ${slide.id}, 'Slide ${idx + 1}')"><i class="ri-delete-bin-line"></i></button>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function openAddHeroSlideModal() {
+  document.getElementById('heroSlidePhotoPreview').style.display = 'none';
+  document.getElementById('heroSlidePhotoImg').src = '';
+  document.getElementById('heroSlidePhotoInput').value = '';
+  openModal('heroSlideModal');
+}
+
+function previewHeroSlidePhoto(input) {
+  if (!input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById('heroSlidePhotoImg').src = e.target.result;
+    document.getElementById('heroSlidePhotoPreview').style.display = 'block';
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function saveHeroSlide() {
+  const currentSrc = document.getElementById('heroSlidePhotoImg').src;
+  if (!currentSrc) {
+    toast('Please upload a slide photo.', 'error');
+    return;
+  }
+  const newId = heroSlides.length ? Math.max(...heroSlides.map(s => s.id)) + 1 : 1;
+  heroSlides.push({ id: newId, img: currentSrc });
+  localStorage.setItem('cp_hero_slides', JSON.stringify(heroSlides));
+  renderHeroSlidesGrid();
+  closeModal('heroSlideModal');
+  toast('New slide added to hero slider!', 'success');
+}
+
+function handleHeroSlideReplace(input, id) {
+  if (!input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const idx = heroSlides.findIndex(s => s.id === id);
+    if (idx !== -1) {
+      heroSlides[idx].img = e.target.result;
+      localStorage.setItem('cp_hero_slides', JSON.stringify(heroSlides));
+      renderHeroSlidesGrid();
+      toast('Slide ' + (idx + 1) + ' updated successfully!', 'success');
+    }
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function deleteHeroSlide(id) {
+  if (heroSlides.length <= 1) {
+    toast('At least one hero slide must remain.', 'error');
+    return;
+  }
+  heroSlides = heroSlides.filter(s => s.id !== id);
+  localStorage.setItem('cp_hero_slides', JSON.stringify(heroSlides));
+  renderHeroSlidesGrid();
+  toast('Slide removed from hero slider.', 'success');
+}
+
+/* ---- HERO TEXT SETTINGS ---- */
+function saveHomeHero() {
+  const heroSettings = {
+    title: document.getElementById('heroTitle').value.trim(),
+    badge: document.getElementById('heroBadge').value.trim(),
+    subtitle: document.getElementById('heroSubtitle').value.trim()
+  };
+  localStorage.setItem('cp_hero_settings', JSON.stringify(heroSettings));
+  toast('Hero settings saved! Live site updated.', 'success');
+}
+
+function loadHomeHeroSettings() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('cp_hero_settings'));
+    if (saved) {
+      if (saved.title) document.getElementById('heroTitle').value = saved.title;
+      if (saved.badge) document.getElementById('heroBadge').value = saved.badge;
+      if (saved.subtitle) document.getElementById('heroSubtitle').value = saved.subtitle;
+    }
+  } catch(e) {}
+}
+
 /* ---- SERVICES ---- */
 function renderServicesTable() {
   const tbody = document.getElementById('servicesTableBody');
@@ -581,6 +699,7 @@ function openAddServiceModal() {
   document.getElementById('editServiceCategory').value = '';
   document.getElementById('editServiceDesc').value = '';
   document.getElementById('servicePhotoPreview').style.display = 'none';
+  document.getElementById('servicePhotoImg').src = '';
   document.getElementById('servicePhotoInput').value = '';
   openModal('serviceModal');
 }
@@ -601,9 +720,12 @@ function openEditServiceModal(id) {
 
 function previewServicePhoto(input) {
   if (!input.files[0]) return;
-  const url = URL.createObjectURL(input.files[0]);
-  document.getElementById('servicePhotoImg').src = url;
-  document.getElementById('servicePhotoPreview').style.display = 'block';
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById('servicePhotoImg').src = e.target.result;
+    document.getElementById('servicePhotoPreview').style.display = 'block';
+  };
+  reader.readAsDataURL(input.files[0]);
 }
 
 function saveService() {
@@ -611,7 +733,6 @@ function saveService() {
   const name = document.getElementById('editServiceName').value.trim();
   const category = document.getElementById('editServiceCategory').value.trim();
   const desc = document.getElementById('editServiceDesc').value.trim();
-  const fileInput = document.getElementById('servicePhotoInput');
   const currentSrc = document.getElementById('servicePhotoImg').src;
 
   if (!name) { toast('Please enter a service name.', 'error'); return; }
@@ -623,11 +744,11 @@ function saveService() {
       services[idx].name = name;
       services[idx].category = category;
       services[idx].desc = desc;
-      if (fileInput.files[0]) services[idx].img = currentSrc;
+      if (currentSrc) services[idx].img = currentSrc;
     }
     toast('Service "' + name + '" updated!', 'success');
   } else {
-    if (!fileInput.files[0]) { toast('Please upload a service photo.', 'error'); return; }
+    if (!currentSrc) { toast('Please upload a service photo.', 'error'); return; }
     const newId = services.length ? Math.max(...services.map(s => s.id)) + 1 : 1;
     services.push({ id: newId, name, category, desc, img: currentSrc });
     toast('Service "' + name + '" added!', 'success');
@@ -680,6 +801,7 @@ function openAddPortfolioModal() {
   document.getElementById('editPortfolioTitle').value = '';
   document.getElementById('editPortfolioCategory').value = 'weddings';
   document.getElementById('portfolioPhotoPreview').style.display = 'none';
+  document.getElementById('portfolioPhotoImg').src = '';
   document.getElementById('portfolioPhotoInput').value = '';
   openModal('portfolioModal');
 }
@@ -699,16 +821,18 @@ function openEditPortfolioModal(id) {
 
 function previewPortfolioPhoto(input) {
   if (!input.files[0]) return;
-  const url = URL.createObjectURL(input.files[0]);
-  document.getElementById('portfolioPhotoImg').src = url;
-  document.getElementById('portfolioPhotoPreview').style.display = 'block';
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById('portfolioPhotoImg').src = e.target.result;
+    document.getElementById('portfolioPhotoPreview').style.display = 'block';
+  };
+  reader.readAsDataURL(input.files[0]);
 }
 
 function savePortfolioItem() {
   const id = document.getElementById('editPortfolioId').value;
   const title = document.getElementById('editPortfolioTitle').value.trim();
   const category = document.getElementById('editPortfolioCategory').value;
-  const fileInput = document.getElementById('portfolioPhotoInput');
   const currentSrc = document.getElementById('portfolioPhotoImg').src;
 
   if (!title) { toast('Please enter a title.', 'error'); return; }
@@ -718,11 +842,11 @@ function savePortfolioItem() {
     if (idx !== -1) {
       portfolio[idx].title = title;
       portfolio[idx].category = category;
-      if (fileInput.files[0]) portfolio[idx].img = currentSrc;
+      if (currentSrc) portfolio[idx].img = currentSrc;
     }
     toast('Portfolio item "' + title + '" updated!', 'success');
   } else {
-    if (!fileInput.files[0]) { toast('Please upload a photo.', 'error'); return; }
+    if (!currentSrc) { toast('Please upload a photo.', 'error'); return; }
     const newId = portfolio.length ? Math.max(...portfolio.map(p => p.id)) + 1 : 1;
     portfolio.push({ id: newId, title, category, img: currentSrc });
     toast('Photo "' + title + '" added!', 'success');
@@ -743,7 +867,7 @@ function deletePortfolio(id) {
 /* ---- CONTACTS ---- */
 function renderContactServicesList() {
   const el = document.getElementById('contactServicesList');
-  el.innerHTML = services.map(s => '<span class="badge badge-gold">' + escHtml(s.name) + '</span>').join('');
+  if (el) el.innerHTML = services.map(s => '<span class="badge badge-gold">' + escHtml(s.name) + '</span>').join('');
 }
 
 /* ---- HERO / OWNER UPLOAD ---- */
@@ -765,7 +889,8 @@ function handleOwnerPhoto(input) {
 function confirmDelete(type, id, name) {
   document.getElementById('confirmMsg').textContent = 'Are you sure you want to delete "' + name + '"? This cannot be undone.';
   document.getElementById('confirmDeleteBtn').onclick = function() {
-    if (type === 'service') deleteService(id);
+    if (type === 'heroSlide') deleteHeroSlide(id);
+    else if (type === 'service') deleteService(id);
     else if (type === 'portfolio') deletePortfolio(id);
     closeModal('confirmModal');
   };
@@ -821,7 +946,7 @@ function escAttr(str) {
 }
 
 /* ---- DRAG & DROP ---- */
-['serviceUploadZone','portfolioUploadZone'].forEach(function(zoneId) {
+['heroSlideUploadZone','serviceUploadZone','portfolioUploadZone'].forEach(function(zoneId) {
   const zone = document.getElementById(zoneId);
   if (!zone) return;
   zone.addEventListener('dragover', function(e) { e.preventDefault(); zone.classList.add('drag-over'); });
@@ -833,7 +958,10 @@ function escAttr(str) {
     if (!file || !file.type.startsWith('image/')) return;
     const dt = new DataTransfer();
     dt.items.add(file);
-    if (zoneId === 'serviceUploadZone') {
+    if (zoneId === 'heroSlideUploadZone') {
+      document.getElementById('heroSlidePhotoInput').files = dt.files;
+      previewHeroSlidePhoto(document.getElementById('heroSlidePhotoInput'));
+    } else if (zoneId === 'serviceUploadZone') {
       document.getElementById('servicePhotoInput').files = dt.files;
       previewServicePhoto(document.getElementById('servicePhotoInput'));
     } else {

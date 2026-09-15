@@ -51,44 +51,58 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // --- 3. Hero Background Automatic Slideshow (Continuous 2-second interval) ---
-  const heroSlides = document.querySelectorAll('.hero-slide');
-  const heroDots = document.querySelectorAll('.hero-dot');
-  let currentHeroIndex = 0;
   let heroSlideTimer = null;
+  let currentHeroIndex = 0;
 
-  function switchHeroSlide(targetIndex) {
-    if (!heroSlides.length) return;
-    heroSlides.forEach((slide, idx) => {
-      slide.classList.toggle('active', idx === targetIndex);
-    });
-    heroDots.forEach((dot, idx) => {
-      dot.classList.toggle('active', idx === targetIndex);
-    });
-    currentHeroIndex = targetIndex;
-  }
+  function initHeroSlider() {
+    if (heroSlideTimer) {
+      clearInterval(heroSlideTimer);
+      heroSlideTimer = null;
+    }
+    const heroSlides = document.querySelectorAll('.hero-slide');
+    const heroDots = document.querySelectorAll('.hero-dot');
+    currentHeroIndex = 0;
 
-  function advanceHeroSlide() {
-    const nextIndex = (currentHeroIndex + 1) % heroSlides.length;
-    switchHeroSlide(nextIndex);
-  }
-
-  function startHeroTimer() {
-    if (heroSlideTimer) clearInterval(heroSlideTimer);
-    heroSlideTimer = setInterval(advanceHeroSlide, 2000); // 2 seconds continuous
-  }
-
-  if (heroSlides.length > 1) {
-    startHeroTimer();
-
-    // Click to switch manually & restart 2s timer
-    heroDots.forEach((dot) => {
-      dot.addEventListener('click', (e) => {
-        const slideIdx = parseInt(e.currentTarget.getAttribute('data-slide'), 10);
-        switchHeroSlide(slideIdx);
-        startHeroTimer();
+    function switchHeroSlide(targetIndex) {
+      if (!heroSlides.length) return;
+      heroSlides.forEach((slide, idx) => {
+        slide.classList.toggle('active', idx === targetIndex);
       });
-    });
+      heroDots.forEach((dot, idx) => {
+        dot.classList.toggle('active', idx === targetIndex);
+      });
+      currentHeroIndex = targetIndex;
+    }
+
+    function advanceHeroSlide() {
+      if (!heroSlides.length) return;
+      const nextIndex = (currentHeroIndex + 1) % heroSlides.length;
+      switchHeroSlide(nextIndex);
+    }
+
+    function startHeroTimer() {
+      if (heroSlideTimer) clearInterval(heroSlideTimer);
+      if (heroSlides.length > 1) {
+        heroSlideTimer = setInterval(advanceHeroSlide, 2000); // 2 seconds continuous
+      }
+    }
+
+    if (heroSlides.length > 1) {
+      startHeroTimer();
+
+      // Click to switch manually & restart 2s timer
+      heroDots.forEach((dot) => {
+        dot.addEventListener('click', (e) => {
+          const slideIdx = parseInt(e.currentTarget.getAttribute('data-slide'), 10);
+          switchHeroSlide(slideIdx);
+          startHeroTimer();
+        });
+      });
+    }
   }
+
+  window.initHeroSlider = initHeroSlider;
+  initHeroSlider();
 
   // --- 4. Viewport Scroll Reveal Animations ---
   const revealElements = document.querySelectorAll('.reveal');
